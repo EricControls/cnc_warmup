@@ -49,6 +49,7 @@ pythonenv*
 
 ### Emacs ###
 # Backup files
+.projectile
 *~
 \#*
 .\#*
@@ -73,10 +74,9 @@ TAGS
 
 ### Project Specific ###
 # CNC output files
-*.h
-*.gcode
-*.nc
-*.tap
+# *.h
+# *.gcode
+# *.nc
 
 # Configuration files
 config.ini
