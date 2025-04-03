@@ -1,11 +1,14 @@
-* settings :ignore:noexport
-  #+STARTUP: hidestars logdone content indent
+* settings :ignore:noexport:
+  #+STARTUP: hidestars logdone content
   #+TODO: NEXT(n!) INCOMPLETE(i!) TODO(t!) CANCEL(c@!) DONE(d!)
   #+EXCLUDE_TAGS: noexport
   #+OPTIONS: timestamp:nil
   #+OPTIONS: toc:nil
   #+OPTIONS: ^init tex:t' num:nil
-  #+export_file_name: ../README.md
+  #+EXPORT_FILE_NAME: ../README.md
 
-* cnc_warmup
+* cnc warmup
   This warmup scrip generates a warmup file for Heidenhain controller
+
+* how to use
+  todo - writeup a how to here.
