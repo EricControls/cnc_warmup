@@ -40,11 +40,11 @@
   |     |                  |                     |           |
   | 7   | directories,     | 13                  | files     |
 
-  - [-] cnc_warmup/ [3/8]
+  - [-] cnc_warmup/ [5/8]
     - [X] .gitignore
     - [ ] README.md
-    - [ ] pyproject.toml
-    - [ ] LICENSE
+    - [X] pyproject.toml
+    - [X] LICENSE # using MIT
     - [X] requirements.txt
     - [X] src/
       - [X] cnc_warmup/ [5/5]
