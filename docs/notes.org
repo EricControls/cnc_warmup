@@ -6,40 +6,66 @@
   #+OPTIONS: toc:nil
   #+OPTIONS: ^init tex:t' num:nil
 
-* DONE file structure
-  CLOSED: [2025-04-02 Wed 21:26]
+* TODO file structure 1/1
+  - State "TODO"       from "DONE"       [2025-04-05 Sat 14:15]
   - State "DONE"       from "TODO"       [2025-04-02 Wed 21:26]
   - State "TODO"       from              [2025-04-02 Wed 19:23]
 
-  ~prototype files~
 
-  cnc_warmup/
-    .gitignore
-    README.md
-    pyproject.toml
-    LICENSE
-    requirements.txt
-    src/
-        cnc_warmup/
-            __init__.py
-            cli.py
-            warmup_generator.py  # (renamed from controller.py)
-            models.py
-            machines/
-                __init__.py
-                small.py
-                medium.py
-                large.py
+  #+begin_src bash
+    tree ../
+  #+end_src
 
-    tests/
-        __init__.py
-        test_cli.py
-        test_generator.py
-        test_machines/
-            test_small.py
-            test_medium.py
-            test_large.py
-    output/                  # Generated .h files (gitignored?)
-        small_warmup.h       # Example: "cnc_warmup small 1 -o output/small_warmup.h"
-        medium_warmup.h      # Example: "cnc_warmup medium 3 -c -o output/medium_warmup.h"
-        large_warmup.h       # Example: "cnc_warmup large 5 -o output/large_warmup.h"
+  #+RESULTS:
+  | ../ |                  |                     |           |
+  | ├── | README.md        |                     |           |
+  | ├── | docs             |                     |           |
+  | │   | ├──              | notes.org           |           |
+  | │   | └──              | readme.org          |           |
+  | ├── | output           |                     |           |
+  | │   | └──              | warmup.h            |           |
+  | ├── | requirements.txt |                     |           |
+  | ├── | src              |                     |           |
+  | │   | └──              | cnc_warmup          |           |
+  | │   | ├──              | __init__.py         |           |
+  | │   | ├──              | cli.py              |           |
+  | │   | ├──              | machines            |           |
+  | │   | │                | ├──                 | large.py  |
+  | │   | │                | ├──                 | medium.py |
+  | │   | │                | └──                 | small.py  |
+  | │   | ├──              | models.py           |           |
+  | │   | └──              | warmup_generator.py |           |
+  | └── | tests            |                     |           |
+  | └── | __init__.py      |                     |           |
+  |     |                  |                     |           |
+  | 7   | directories,     | 13                  | files     |
+
+  - [ ] cnc_warmup/ [0/8]
+    - [ ] .gitignore
+    - [ ] README.md
+    - [ ] pyproject.toml
+    - [ ] LICENSE
+    - [ ] requirements.txt
+    - [ ] src/
+      - [ ] cnc_warmup/ [0/5]
+        - [ ] __init__.py
+        - [ ] cli.py
+        - [ ] warmup_generator.py  # (renamed from controller.py)
+        - [ ] models.py
+        - [ ] machines/ [0/4]
+          - [ ] __init__.py
+          - [ ] small.py
+          - [ ] medium.py
+          - [ ] large.py
+    - [ ] tests/ [0/4]
+      - [ ] __init__.py
+      - [ ] test_cli.py
+      - [ ] test_generator.py
+      - [ ] test_machines/ [0/3]
+        - [ ] test_small.py
+        - [ ] test_medium.py
+        - [ ] test_large.py
+    - [ ] output/ [0/3]                 # Generated .h files (gitignored?)
+      - [ ] small_warmup.h       # Example: "cnc_warmup small 1 -o output/small_warmup.h"
+      - [ ] medium_warmup.h      # Example: "cnc_warmup medium 3 -c -o output/medium_warmup.h"
+      - [ ] large_warmup.h       # Example: "cnc_warmup large 5 -o output/large_warmup.h"
