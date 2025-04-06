@@ -4,45 +4,55 @@ import sys
 from .models import WarmupConfig, Tool
 from .warmup_generator import WarmupGenerator
 
-def validation_positive_float(value: str) -> float:
+
+def validate_positive_float(value: str) -> float:
     """Ensure numeric values are positive"""
     try:
-        fval = flaot(value)
+        fval = float(value)
         if fval <= 0:
             raise ValueError(f"{value} must be positive")
         return fval
     except ValueError as e:
         raise argparse.ArgumentTypeError(str(e))
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description="""Generate customized warmup routines for Heidenhain TNC 640 controllers
+        description =
+        """Generate warmup routines for Heidenhain TNC 640 controllers
 
-        Features:
-          - Automatic tool length compensation
-          - Progressive spindle RPM ramp-up
-          - Machine-specific travel limits
-          - Coolant control integration
+            Features:
+              - Automatic tool length compensation
+              - Progressive spindle RPM ramp-up
+              - Machine-specific travel limits
+              - Coolant control integration
 
-        Example:
-          cnc-warmup medium 3 --tool-length 150 --duration 45 -c -o warmup.h""",
+            Example:
+              cnc-warmup medium 3 --tool-length 150 --duration 45 -c -o warmup.h""",
         formatter_class=argparse.RawTextHelpFormatter
 )
+
+    # Help argument must come first
+    # parser.add_argument(
+    #     "-h", "--help",
+    #     action="store_true",
+    #     help="Show this help message and exit"
+    #     )
 
     # Required arguments
     parser.add_argument(
         "machine_type",
-        choices=["small","medium","large"],
+        choices=["small", "medium", "large"],
         help="""Machine size selection:
         small  - 762mm X x 508mm Y x 500mm Z
         medium - 1016mm X x 660mm Y x 500mm Z
-        large  - 1270 X x 508mm Y x 500mm Z"""
+        large  - 1270mm X x 508mm Y x 500mm Z"""
     )
 
-    parse.add_argument(
+    parser.add_argument(
         "tool_number",
         type=int,
-        choices=range(1,100),
+        choices=range(1, 100),
         metavar="TOOL_NUM",
         help="Tool number (1-99)"
     )
@@ -63,11 +73,11 @@ def parse_arguments():
         help="Tool radius in mm (default: 5.0)"
     )
 
-    parser.add_arguement(
+    parser.add_argument(
         "-d", "--duration",
         type=int,
         default=30,
-        choices=range(1,121),
+        choices=range(1, 121),
         metavar="MINUTES",
         help="Warmup duration (1-120 minutes, default: 30)"
     )
@@ -84,6 +94,7 @@ def parse_arguments():
     )
 
     return parser.parse_args()
+
 
 def main():
     try:
@@ -113,5 +124,6 @@ def main():
         print(f"Aw snap! Error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    if __name__=="__main__":
-        main()
+
+if __name__ == "__main__":
+    main()
