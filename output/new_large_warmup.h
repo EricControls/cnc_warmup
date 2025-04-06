@@ -1,0 +1,86 @@
+BEGIN PGM Large_CNC_Machine MM
+
+;-- Clear Moves --
+L Z+0 RO FMAX ; Ensure Z is fully retracted
+L X+0 Y+0 RO FMAX ; Move to machine origin (center-top)
+M5 ; Stop spindle
+;M8 ; Turn on coolant
+
+;-- Tool Definition --
+; TOOL: #3 L150.0mm R5.0mm
+; FEEDRATE ADJUSTMENT: 77.6% (tool length compensation)
+TOOL DEF 3 L+150.0 R5.0
+TOOL CALL 3 Z S0
+
+;-- Warmup Parameter  --
+START_FEED_PERCENT = 10
+FINISH_FEED_PERCENT = 80
+START_RPM_PERCENT = 10
+FINISH_RPM_PERCENT = 80
+
+;-- Machine Limit --
+X_MAX = 635
+X_MIN = --635
+Y_MAX = 254
+Y_MIN = -254
+Z_MAX = -500
+Z_MIN = 35.0
+MAX_FEED_X = 34938.944294800065
+MAX_FEED_Y = 34938.944294800065
+MAX_FEED_Z = 31056.839373155617
+MAX_RPM = 12422.735749262247
+
+M8 ; Turn on flood coolant
+
+;-- Calculate Total Steps (Approximate) --
+TOTAL_WARMUP_SECONDS = WARMUP_DURATION_MINUTES * 60
+APPROX_CYCLE_TIME = 10 ; Approximate time for one full XYZ cycle (adjust based on travel and feed)
+NUM_CYCLES = MAX(1, ROUND(TOTAL_WARMUP_SECONDS / APPROX_CYCLE_TIME)) ; Ensure at least one cycle
+
+;-- Calculate Step Increments --
+FEED_INCREMENT_PERCENT = (FINISH_FEED_PERCENT - START_FEED_PERCENT) / NUM_CYCLES
+RPM_INCREMENT_PERCENT = (FINISH_RPM_PERCENT - START_RPM_PERCENT) / NUM_CYCLES
+
+;-- Simultaneous Axis & Spindle Warmup (Time-Based Cycles) --
+CURRENT_FEED_PERCENT = START_FEED_PERCENT
+CURRENT_RPM_PERCENT = START_RPM_PERCENT
+
+FOR CYCLE = 1 TO NUM_CYCLES
+  CURRENT_FEED = MAX_FEED_X * CURRENT_FEED_PERCENT / 100
+  CURRENT_RPM = MAX_RPM * CURRENT_RPM_PERCENT / 100
+
+  M3 S+ROUND(CURRENT_RPM) ; Start/Adjust Spindle RPM
+
+  L X+X_MIN Y+Y_MIN Z+Z_MIN F=ROUND(CURRENT_FEED) ; Move to near bottom corner
+  L X+X_MAX Y+Y_MAX Z+Z_MAX F=ROUND(CURRENT_FEED) ; Move to near top corner
+  L X+X_MIN Y+Y_MIN Z+Z_MIN F=ROUND(CURRENT_FEED) ; Move back to near bottom corner
+
+  CURRENT_FEED_PERCENT = CURRENT_FEED_PERCENT + FEED_INCREMENT_PERCENT
+  CURRENT_RPM_PERCENT = CURRENT_RPM_PERCENT + RPM_INCREMENT_PERCENT
+ENDFOR
+M5 ; Stop Spindle
+
+;-- Single Axis Sweeps (at finish feed) --
+FINISH_FEED_X = MAX_FEED_X * FINISH_FEED_PERCENT / 100
+FINISH_FEED_Y = MAX_FEED_Y * FINISH_FEED_PERCENT / 100
+FINISH_FEED_Z = MAX_FEED_Z * FINISH_FEED_PERCENT / 100
+
+L X+X_MIN Y+0 Z+0 F+FINISH_FEED_X
+L X+X_MAX F+FINISH_FEED_X
+L X+X_MIN F+FINISH_FEED_X
+
+L X+0 Y+Y_MIN Z+0 F+FINISH_FEED_Y
+L Y+Y_MAX F+FINISH_FEED_Y
+L Y+Y_MIN F+FINISH_FEED_Y
+
+L X+0 Y+0 Z+Z_MIN F+FINISH_FEED_Z
+L Z+Z_MAX F+FINISH_FEED_Z
+L Z+Z_MIN F+FINISH_FEED_Z
+
+M9 ; Turn off flood coolant
+
+;-- End of Program --
+L Z+0 RO FMAX
+L X+0 Y+0 RO FMAX
+M30 ; Reset spindle rotation
+END PGM Large_CNC_Machine MM

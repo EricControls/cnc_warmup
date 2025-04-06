@@ -45,6 +45,10 @@ class WarmupConfig:
     machine_type: Literal["small", "medium", "large"]
     tool: Tool
     duration_min: int = 30
+    start_feed_percent: int = 25  # make this an argument later
+    finish_feed_percent: int = 100  # make this an argument later
+    start_rpm_percent: int = 25  # make this an argument later
+    finish_rpm_percent: int = 100  # make this an argument later
     use_coolant: bool = False
 
     def __post_init__(self):
