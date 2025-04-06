@@ -120,7 +120,7 @@ class WarmupGenerator:
                 #f"TOOL CALL {self.config.tool.number} Z S{int(self.machine.max_rpm*intensity)} M3",
                 f"S{int(self.machine.max_rpm*intensity)} M3",
                 f"L Z-{int(safe_z*0.9*intensity)} F{int(self.machine.feedrate_mm_min[2]*feed_adjust*intensity)}",
-                "M0 P15" if cycle < cycles-1 else ""  # Pause between cycles
+                "M0 P5" if cycle < cycles-1 else ""  # Pause between cycles
             ])
 
         return [line for line in movements]
