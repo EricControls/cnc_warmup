@@ -53,6 +53,7 @@ pythonenv*
 *~
 \#*
 .\#*
+.dir-locals.el
 
 # Auto-save files
 *.*~
