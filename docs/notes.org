@@ -40,7 +40,7 @@
   |     |                  |                     |           |
   | 7   | directories,     | 13                  | files     |
 
-  - [-] cnc_warmup/ [5/8]
+  - [-] cnc_warmup/ [7/8]
     - [X] .gitignore
     - [ ] README.md
     - [X] pyproject.toml
@@ -57,15 +57,15 @@
           - [X] small.py
           - [X] medium.py
           - [X] large.py
-    - [-] tests/ [1/4]
+    - [X] tests/ [4/4]
       - [X] __init__.py
-      - [ ] test_cli.py
-      - [ ] test_generator.py
-      - [ ] test_machines/ [0/3]
-        - [ ] test_small.py
-        - [ ] test_medium.py
-        - [ ] test_large.py
-    - [ ] output/ [0/3]          # Generated .h files (should I include in gitignored?)
-      - [ ] small_warmup.h       # Example: "cnc_warmup small 1 -o output/small_warmup.h"
-      - [ ] medium_warmup.h      # Example: "cnc_warmup medium 3 -c -o output/medium_warmup.h"
-      - [ ] large_warmup.h       # Example: "cnc_warmup large 5 -o output/large_warmup.h"
+      - [X] test_cli.py
+      - [X] test_generator.py
+      - [X] test_machines/ [3/3]
+        - [X] test_small.py
+        - [X] test_medium.py
+        - [X] test_large.py
+    - [X] output/ [3/3]          # Generated .h files (should I include in gitignored?)
+      - [X] small_warmup.h       # Example: "cnc_warmup small 1 -o output/small_warmup.h"
+      - [X] medium_warmup.h      # Example: "cnc_warmup medium 3 -c -o output/medium_warmup.h"
+      - [X] large_warmup.h       # Example: "cnc_warmup large 5 -o output/large_warmup.h"

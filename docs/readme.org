@@ -10,8 +10,35 @@
 * cnc warmup
   This warmup scrip generates a warmup file for Heidenhain controller
 
-* how to use
-  Example:
-  #+begin_src bash
-    cnc_warmup small 1 -o output/small_warmup.h
-  #+end_src
+* how to install
+** macos
+   Step:
+   1. clone this repository
+   2. cd into the repository with 'cd cnc_warmup'
+   3. create a virtual environment
+      #+begin_src bash
+        python -m venv venv
+      #+end_src
+   4. source file
+      #+begin_src bash
+        source venv/bin/activate
+      #+end_src
+   5. install
+      #+begin_src bash
+        pip install -e ".[dev]"
+      #+end_src
+   6. confirm installation
+      #+begin_src bash
+        cnc-warmup --help
+      #+end_src
+
+** how to use
+   Example:
+   #+begin_src bash
+     cnc_warmup small 1 -o output/small_warmup.h
+   #+end_src
+
+   Run the help for more info:
+   #+begin_src bash
+     cnc-warmup --help
+   #+end_src

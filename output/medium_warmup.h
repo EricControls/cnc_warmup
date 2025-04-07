@@ -1,32 +1,38 @@
-BEGIN PGM Large_CNC_Machine MM
+BEGIN PGM Medium_CNC_Machine MM
 
-;-- Configuration --
-WARMUP_DURATION_MINUTES = 5 ; Example duration - set by Python script
-
-;-- Safety Block --
+;-- Clear Moves --
 L Z+0 RO FMAX ; Ensure Z is fully retracted
 L X+0 Y+0 RO FMAX ; Move to machine origin (center-top)
 M5 ; Stop spindle
-M8 ; Turn on coolant
-T1 L Z+100
 
-;-- Warmup Parameter  --
-START_FEED_PERCENT = 10
-FINISH_FEED_PERCENT = 80
-START_RPM_PERCENT = 10
-FINISH_RPM_PERCENT = 80
+;-- Tool Definition --
+; Tool: #3 L50.0mm R7.0mm
+; Feedrate Adjustment: 100.0% (tool length compensation)
+TOOL DEF 3 L+50.0 R7.0
+TOOL CALL 3 Z S0
 
-;-- Machine Limit --
-X_MAX = 381
-X_MIN = -381
-Y_MAX = 254
-Y_MIN = -254
+;-- Warmup Parameter --
+START_FEED_PERCENT = 25
+FINISH_FEED_PERCENT = 100
+START_RPM_PERCENT = 25
+FINISH_RPM_PERCENT = 100
+WARMUP_DURATION_MINUTES = 9
+
+;-- Machine Limit (using 95% of travels to stay away from limits) --
+X_MAX = 483
+X_MIN = -483
+Y_MAX = 314
+Y_MIN = -314
 Z_MAX = 0
-Z_MIN = -500
+Z_MIN = -0
+
+;-- Feedrate adjusted to 100.0% (tool length compensation) --
 MAX_FEED_X = 45000
 MAX_FEED_Y = 45000
 MAX_FEED_Z = 40000
 MAX_RPM = 16000
+
+M8 ; Turn on flood coolant
 
 ;-- Calculate Total Steps (Approximate) --
 TOTAL_WARMUP_SECONDS = WARMUP_DURATION_MINUTES * 60
@@ -54,9 +60,14 @@ FOR CYCLE = 1 TO NUM_CYCLES
   CURRENT_FEED_PERCENT = CURRENT_FEED_PERCENT + FEED_INCREMENT_PERCENT
   CURRENT_RPM_PERCENT = CURRENT_RPM_PERCENT + RPM_INCREMENT_PERCENT
 ENDFOR
+
 M5 ; Stop Spindle
+M9 ; Turn off flood coolant
+M0 P20 ; dwell for 20s to allow coolant to settle
 
 ;-- Single Axis Sweeps (at finish feed) --
+;-- Prevent cold drops of coolant on back of neck --
+;-- Knock off some coolant in case operator opens door as soon as program ends --
 FINISH_FEED_X = MAX_FEED_X * FINISH_FEED_PERCENT / 100
 FINISH_FEED_Y = MAX_FEED_Y * FINISH_FEED_PERCENT / 100
 FINISH_FEED_Z = MAX_FEED_Z * FINISH_FEED_PERCENT / 100
@@ -77,4 +88,5 @@ L Z+Z_MIN F+FINISH_FEED_Z
 L Z+0 RO FMAX
 L X+0 Y+0 RO FMAX
 M30 ; Reset spindle rotation
-END PGM Large_CNC_Machine MM
+
+END PGM Medium_CNC_Machine MM

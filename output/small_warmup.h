@@ -1,4 +1,4 @@
-BEGIN PGM Large_CNC_Machine MM
+BEGIN PGM Small_CNC_Machine MM
 
 ;-- Clear Moves --
 L Z+0 RO FMAX ; Ensure Z is fully retracted
@@ -6,9 +6,9 @@ L X+0 Y+0 RO FMAX ; Move to machine origin (center-top)
 M5 ; Stop spindle
 
 ;-- Tool Definition --
-; Tool: #3 L30.0mm R5.0mm
+; Tool: #3 L50.0mm R7.0mm
 ; Feedrate Adjustment: 100.0% (tool length compensation)
-TOOL DEF 3 L+30.0 R5.0
+TOOL DEF 3 L+50.0 R7.0
 TOOL CALL 3 Z S0
 
 ;-- Warmup Parameter --
@@ -16,11 +16,11 @@ START_FEED_PERCENT = 25
 FINISH_FEED_PERCENT = 100
 START_RPM_PERCENT = 25
 FINISH_RPM_PERCENT = 100
-WARMUP_DURATION_MINUTES = 10
+WARMUP_DURATION_MINUTES = 34
 
 ;-- Machine Limit (using 95% of travels to stay away from limits) --
-X_MAX = 603
-X_MIN = -603
+X_MAX = 362
+X_MIN = -362
 Y_MAX = 241
 Y_MIN = -241
 Z_MAX = 0
@@ -89,4 +89,4 @@ L Z+0 RO FMAX
 L X+0 Y+0 RO FMAX
 M30 ; Reset spindle rotation
 
-END PGM Large_CNC_Machine MM
+END PGM Small_CNC_Machine MM
