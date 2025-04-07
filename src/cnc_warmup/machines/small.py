@@ -15,7 +15,6 @@ PROFILE = MachineProfile(
 def custom_movements(config: WarmupConfig, safe_z: float) -> List[str]:
     """Override default movements if needed"""
     return [
-        "; Custom small machine pattern",
         f"L X+300 Y+0 Z-{safe_z*0.4:.1f} F20000",
         f"L X-300 Y+0 Z-{safe_z*0.6:.1f} F20000",
         f"L X+0 Y+200 Z-{safe_z*0.5:.1f} F22000",

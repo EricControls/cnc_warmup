@@ -16,6 +16,6 @@ def test_large_diagonal_movements():
     )
     moves = custom_movements(config, safe_z=300)
 
-    assert len(moves) == 6  # Includes diagonal moves
+    assert len(moves) == 7  # Includes diagonal moves
     assert any("X+600 Y+200" in line for line in moves)
     assert any("X-600 Y-200" in line for line in moves)

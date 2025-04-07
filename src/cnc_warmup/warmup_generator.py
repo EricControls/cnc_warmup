@@ -23,7 +23,7 @@ START_RPM_PERCENT = {start_rpm_percent}
 FINISH_RPM_PERCENT = {finish_rpm_percent}
 WARMUP_DURATION_MINUTES = {duration_min}
 
-;-- Machine Limit (using {safety_margin:.0f}% of travels to stay away from limits) --
+;-- Machine Limit (using {safety_margin_program:.0f}% of travels to stay away from limits) --
 X_MAX = {x_max:.0f}
 X_MIN = {x_min:.0f}
 Y_MAX = {y_max:.0f}
@@ -122,8 +122,8 @@ class WarmupGenerator:
     def _validate_tool_limits(self) -> None:
         """Ensure tool can safely operate within machine limits"""
         max_z_travel = abs(self.machine.z_limits[0])
-        safety_margin = 0.90  # 10% safety margin
-        if self.config.tool.length > max_z_travel * safety_margin:
+        safety_margin_validation = 0.90  # 10% safety margin
+        if self.config.tool.length > max_z_travel * safety_margin_validation:
             raise ValueError(
                 f"Tool length {self.config.tool.length}mm exceeds "
                 f"90% of machine Z travel ({max_z_travel}mm)"
@@ -132,7 +132,7 @@ class WarmupGenerator:
     def _calculate_feedrate_adjustment(self) -> float:
         """Calculate feedrate reduction factor for long tools."""
         normal_length = 100  # Standard tool length (mm), this assumed can be optimized.
-        max_recommended = abs(self.machine.z_limits[0]) * 0.90
+        max_recommended = abs(self.machine.z_limits[0]) * 0.95
 
         if self.config.tool.length <= normal_length:
             return 1.0  # No reduction, feed her the onions!
@@ -145,7 +145,7 @@ class WarmupGenerator:
     def generate_gcode(self) -> List[str]:
         """Generates complete warmup routine with tool compensation"""
         adjusted_for_tool_length_z = abs(self.machine.z_limits[0]) - self.config.tool.length
-        safety_margin = 0.95  # use most of the travel to stay away from limits switches
+        safety_margin_program = 0.95  # use most of the travel to stay away from limits switches
         feed_adjust = self._calculate_feedrate_adjustment()
 
         # Format header
@@ -160,20 +160,20 @@ class WarmupGenerator:
             start_rpm_percent=self.config.start_rpm_percent,
             finish_rpm_percent=self.config.finish_rpm_percent,
             duration_min=self.config.duration_min,
-            safety_margin=safety_margin*100,
-            x_max=self.machine.x_limits[1]*safety_margin,
-            x_min=self.machine.x_limits[0]*safety_margin,
-            y_max=self.machine.y_limits[1]*safety_margin,
-            y_min=self.machine.y_limits[0]*safety_margin,
+            safety_margin_program=safety_margin_program*100,
+            x_max=self.machine.x_limits[1]*safety_margin_program,
+            x_min=self.machine.x_limits[0]*safety_margin_program,
+            y_max=self.machine.y_limits[1]*safety_margin_program,
+            y_min=self.machine.y_limits[0]*safety_margin_program,
             z_min=adjusted_for_tool_length_z if adjusted_for_tool_length_z < 0 else 0,  # Ensure Z_MIN is negative or zero
-            z_max=self.machine.z_limits[1],
+            z_max=self.machine.z_limits[1] if self.machine.z_limits[1] > 0 else 0,  # Ensure z_max is positive or zero
             x_max_feedrate=self.machine.feedrate_mm_min[0]*feed_adjust,
             y_max_feedrate=self.machine.feedrate_mm_min[1]*feed_adjust,
             z_max_feedrate=self.machine.feedrate_mm_min[2]*feed_adjust,
-            spindle_max_rpm=self.machine.max_rpm*feed_adjust
+            spindle_max_rpm=self.machine.max_rpm
         ).split("\n")
 
-        # Format body
+        # Format body - Time based XYZ and Spindle warmup
         body = []
         if self.config.use_coolant and self.machine.coolant_available:
             body.append(GCODE_COOLANT_ON)

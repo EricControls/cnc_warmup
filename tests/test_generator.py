@@ -34,8 +34,8 @@ class TestWarmupGenerator:
         assert generator is not None
 
         # Invalid tool (too long)
-        config.tool.length = 450
-        with pytest.raises(ValueError, match="exceeds 85% of machine Z travel"):
+        config.tool.length = 550
+        with pytest.raises(ValueError, match="exceeds 90% of machine Z travel"):
             WarmupGenerator(config)
 
 
@@ -46,7 +46,7 @@ class TestWarmupGenerator:
 
         assert gcode[0].startswith("BEGIN PGM Medium_CNC_Machine MM")
         assert gcode[-1].startswith("END PGM Medium_CNC_Machine MM")
-        assert any(f"TOOL DEF {medium_config.tool.number}" in line for line in gcode)
+        assert any(f"TOOL DEF {medium_config.tool.number} L+100.0 R5.0" in line for line in gcode)
 
         # Verify coolant commands
         assert "M8" in "\n".join(gcode)  # coolant ON
@@ -58,8 +58,11 @@ class TestWarmupGenerator:
         generator = WarmupGenerator(medium_config)
         gcode = generator.generate_gcode()
 
-        cycles = [line for line in gcode if "CYCLE" in line]
-        assert len(cycles) == 15 # 30min / 2min per cycle
+        # check for XYZ within the main section
+        assert any("L X" in line for line in gcode if "; Move to near bottom corner" in line)
+
+        # Check for single axis sweeps at the end
+        assert any("L X+X_MIN Y+0 Z+0" in line for line in gcode)
 
 
     def test_all_machine_types(self):

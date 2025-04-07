@@ -3,6 +3,7 @@ import argparse
 import sys
 from .models import WarmupConfig, Tool
 from .warmup_generator import WarmupGenerator
+import click
 
 
 def validate_positive_float(value: str) -> float:
@@ -26,18 +27,12 @@ def parse_arguments():
               - Progressive spindle RPM ramp-up
               - Machine-specific travel limits
               - Coolant control integration
+              - Intended for center top machines
 
             Example:
               cnc-warmup medium 3 --tool-length 150 --duration 45 -c -o warmup.h""",
         formatter_class=argparse.RawTextHelpFormatter
-)
-
-    # Help argument must come first
-    # parser.add_argument(
-    #     "-h", "--help",
-    #     action="store_true",
-    #     help="Show this help message and exit"
-    #     )
+    )
 
     # Required arguments
     parser.add_argument(
@@ -59,7 +54,7 @@ def parse_arguments():
 
     # Required tool geometry
     parser.add_argument(
-        "--tool-length",
+        "-tl", "--tool-length",
         type=validate_positive_float,
         required=True,
         help="Tool length from gauge line in mm (ex. 120.5)"
@@ -67,7 +62,7 @@ def parse_arguments():
 
     # Optional arguments
     parser.add_argument(
-        "--tool-radius",
+        "-tr", "--tool-radius",
         type=validate_positive_float,
         default=5.0,
         help="Tool radius in mm (default: 5.0)"
@@ -116,7 +111,7 @@ def main():
         if args.output:
             with open(args.output, 'w', encoding='utf-8') as f:
                 f.write("\n".join(gcode))
-                print(f"Chooo buddy! Warmup program saved to {args.output}")
+                print(f"Warmup program saved to {args.output}. Chooo buddy!")
         else:
             print("\n".join(gcode))
 
