@@ -31,7 +31,7 @@ Step:
 
 Example:
 
-    cnc_warmup small 1 -o output/small_warmup.h
+    cnc-warmup small 1 -o output/small_warmup.h
 
 Run the help for more info:
 
